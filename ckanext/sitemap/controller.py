@@ -36,7 +36,7 @@ class SitemapController(BaseController):
     @beaker_cache(expire=3600*24, type="dbm", invalidate_on_startup=True)
     def _render_sitemap(self):
         root = etree.Element("urlset", nsmap={None: SITEMAP_NS, 'xhtml': XHTML_NS})
-        pkgs = Session.query(Package).filter(Package.type=='dataset').filter(Package.private!=True).\
+        pkgs = Session.query(Package).filter(Package.private!=True).\
             filter(Package.state=='active').all()
         log.debug(pkgs)
         for pkg in pkgs:
@@ -61,4 +61,3 @@ class SitemapController(BaseController):
 
     def view(self):
         return self._render_sitemap()
-
