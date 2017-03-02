@@ -16,16 +16,14 @@ setup(
 	url='https://github.com/kata-csc/ckanext-sitemap',
 	license='AGPL',
 	packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-	namespace_packages=['ckanext', 'ckanext.sitemap'],
+	namespace_packages=['ckanext'],
 	include_package_data=True,
 	zip_safe=False,
 	setup_requires=[
 		'nose'
 	],
-	entry_points=\
-	"""
+	entry_points='''
         [ckan.plugins]
-	# Add plugins here, eg
-	sitemap=ckanext.sitemap.plugin:SitemapPlugin
-	""",
+        sitemap=ckanext.sitemap.plugin:SitemapPlugin
+    ''',
 )
