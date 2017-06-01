@@ -5,10 +5,12 @@ import logging
 
 from ckan.lib.base import BaseController
 from ckan.model import Session, Package
+import ckan.plugins.toolkit as toolkit
 from ckan.lib.helpers import url_for
 from lxml import etree
 from pylons import config, response
 from pylons.decorators.cache import beaker_cache
+
 
 SITEMAP_NS = "http://www.sitemaps.org/schemas/sitemap/0.9"
 
@@ -61,10 +63,11 @@ class SitemapController(BaseController):
             url = etree.SubElement(root, 'url')
             loc = etree.SubElement(url, 'loc')
             # pkg_url = url_for(controller='package', action="read", id=pkg.name)
-            # loc.text = config.get('ckan.site_url') + pkg_url
-            #organization = pkg.organization
-            #domain = self.domain_for_organization(organization.name)
-            loc.text = "https://opendevelopmentmekong.net/dataset/?id=" + pkg.name
+            # loc.text = config.get('ckan.site_url') + pkg_url            
+            result = toolkit.get_action('package_show')(data_dict={'id': pkg.name})
+            organization = result.organization
+            domain = self.domain_for_organization(organization.name)
+            loc.text = domain + "dataset/?id=" + pkg.name
             lastmod = etree.SubElement(url, 'lastmod')
             lastmod.text = pkg.latest_related_revision.timestamp.strftime('%Y-%m-%d')
             self._create_language_alternatives(loc.text, url)
