@@ -42,7 +42,7 @@ class SitemapController(BaseController):
         return domain
         
     @staticmethod
-    def _create_language_alternatives(link, url):
+    def _create_language_alternatives(domain, link, url):
         '''
         Create links (elements) for every language in locales_offered in .ini file
         :param link: string containing the link, eg. /dataset/xyz
@@ -50,7 +50,7 @@ class SitemapController(BaseController):
         '''
         for lang in locales:
             attrib = {"rel": "alternate", "hreflang": lang, "href":
-                      config.get('ckan.site_url') + '/' + lang + link}
+                      domain + lang + '/' + link}
             etree.SubElement(url, '{http://www.w3.org/1999/xhtml}link', attrib)
 
     @beaker_cache(expire=3600*24, type="dbm", invalidate_on_startup=True)
@@ -58,6 +58,7 @@ class SitemapController(BaseController):
         root = etree.Element("urlset", nsmap={None: SITEMAP_NS, 'xhtml': XHTML_NS})
         pkgs = Session.query(Package).filter(Package.private!=True).\
             filter(Package.state=='active').all()
+            
         log.debug(pkgs)
         for pkg in pkgs:
             url = etree.SubElement(root, 'url')
@@ -67,19 +68,12 @@ class SitemapController(BaseController):
             result = toolkit.get_action('package_show')(data_dict={'id': pkg.name})
             organization = result.organization
             domain = self.domain_for_organization(organization.name)
-            loc.text = domain + "dataset/?id=" + pkg.name
+            link = "dataset/?id=" + pkg.name
+            loc.text = domain + link
             lastmod = etree.SubElement(url, 'lastmod')
             lastmod.text = pkg.latest_related_revision.timestamp.strftime('%Y-%m-%d')
-            self._create_language_alternatives(loc.text, url)
-            # for res in pkg.resources:
-            #     url = etree.SubElement(root, 'url')
-            #     loc = etree.SubElement(url, 'loc')
-            #     loc.text = config.get('ckan.site_url') + url_for(controller="package", action="resource_read",
-            #                                                      id=pkg.name, resource_id=res.id)
-            #     lastmod = etree.SubElement(url, 'lastmod')
-            #     self._create_language_alternatives(url_for(controller="package", action="resource_read",
-            #                                                id=pkg.name, resource_id=res.id), url)
-            #     lastmod.text = res.created.strftime('%Y-%m-%d')
+            self._create_language_alternatives(domain, link, url)
+            
         response.headers['Content-type'] = 'text/xml'
         return etree.tostring(root, pretty_print=True)
         
