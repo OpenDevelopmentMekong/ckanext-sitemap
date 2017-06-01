@@ -67,7 +67,7 @@ class SitemapController(BaseController):
             loc.text = "https://opendevelopmentmekong.net/dataset/?id=" + pkg.name
             lastmod = etree.SubElement(url, 'lastmod')
             lastmod.text = pkg.latest_related_revision.timestamp.strftime('%Y-%m-%d')
-            self._create_language_alternatives(pkg_url, url)
+            self._create_language_alternatives(loc.text, url)
             # for res in pkg.resources:
             #     url = etree.SubElement(root, 'url')
             #     loc = etree.SubElement(url, 'loc')
