@@ -37,7 +37,7 @@ class SitemapController(BaseController):
         elif orga_name == "thailand-organization":
             domain = "https://thailand.opendevelopmentmyanmar.net/"
         
-        return domain;
+        return domain
         
     @staticmethod
     def _create_language_alternatives(link, url):
