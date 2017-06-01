@@ -65,7 +65,8 @@ class SitemapController(BaseController):
             loc = etree.SubElement(url, 'loc')
             # pkg_url = url_for(controller='package', action="read", id=pkg.name)
             # loc.text = config.get('ckan.site_url') + pkg_url            
-            result = toolkit.get_action('package_show')(data_dict={'id': pkg.name})
+            results = toolkit.get_action('package_show')(data_dict={'id': pkg.name})
+            result = results.result
             organization = result.organization
             domain = self.domain_for_organization(organization.name)
             link = "dataset/?id=" + pkg.name
