@@ -42,8 +42,10 @@ class SitemapController(BaseController):
         for pkg in pkgs:
             url = etree.SubElement(root, 'url')
             loc = etree.SubElement(url, 'loc')
-            pkg_url = url_for(controller='package', action="read", id=pkg.name)
-            loc.text = config.get('ckan.site_url') + pkg_url
+            # pkg_url = url_for(controller='package', action="read", id=pkg.name)
+            # loc.text = config.get('ckan.site_url') + pkg_url
+            domain = domain_for_organization(pkg.organization.name)
+            loc.text = domain + "dataset/?id=" + pkg.name
             lastmod = etree.SubElement(url, 'lastmod')
             lastmod.text = pkg.latest_related_revision.timestamp.strftime('%Y-%m-%d')
             self._create_language_alternatives(pkg_url, url)
@@ -58,6 +60,23 @@ class SitemapController(BaseController):
             #     lastmod.text = res.created.strftime('%Y-%m-%d')
         response.headers['Content-type'] = 'text/xml'
         return etree.tostring(root, pretty_print=True)
-
+        
+    def domain_for_organization(orga_name):
+        
+        domain = "https://opendevelopmentmekong.net/"
+        
+        if orga_name == "cambodia-organization":
+            domain = "https://opendevelopmentcambodia.net/"
+        elif orga_name == "laos-organization":
+            domain = "https://laos.opendevelopmentmekong.net/"
+        elif orga_name == "vietnam-organization":
+            domain = "https://vietnam.opendevelopmentmekong.net/"
+        elif orga_name == "myanmar-organization":
+            domain = "https://opendevelopmentmyanmar.net/"
+        elif orga_name == "thailand-organization":
+            domain = "https://thailand.opendevelopmentmyanmar.net/"
+        
+        return domain;
+        
     def view(self):
         return self._render_sitemap()
