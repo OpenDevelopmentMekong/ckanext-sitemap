@@ -44,7 +44,7 @@ class SitemapController(BaseController):
             loc = etree.SubElement(url, 'loc')
             # pkg_url = url_for(controller='package', action="read", id=pkg.name)
             # loc.text = config.get('ckan.site_url') + pkg_url
-            domain = domain_for_organization(pkg.organization.name)
+            domain = self.domain_for_organization(pkg.organization.name)
             loc.text = domain + "dataset/?id=" + pkg.name
             lastmod = etree.SubElement(url, 'lastmod')
             lastmod.text = pkg.latest_related_revision.timestamp.strftime('%Y-%m-%d')
@@ -61,7 +61,7 @@ class SitemapController(BaseController):
         response.headers['Content-type'] = 'text/xml'
         return etree.tostring(root, pretty_print=True)
         
-    def domain_for_organization(orga_name):
+    def domain_for_organization(self,orga_name):
         
         domain = "https://opendevelopmentmekong.net/"
         
