@@ -20,7 +20,25 @@ locales = config.get('ckan.locales_offered', '').split()
 
 
 class SitemapController(BaseController):
-
+    
+    @staticmethod
+    def domain_for_organization(orga_name):
+        
+        domain = "https://opendevelopmentmekong.net/"
+        
+        if orga_name == "cambodia-organization":
+            domain = "https://opendevelopmentcambodia.net/"
+        elif orga_name == "laos-organization":
+            domain = "https://laos.opendevelopmentmekong.net/"
+        elif orga_name == "vietnam-organization":
+            domain = "https://vietnam.opendevelopmentmekong.net/"
+        elif orga_name == "myanmar-organization":
+            domain = "https://opendevelopmentmyanmar.net/"
+        elif orga_name == "thailand-organization":
+            domain = "https://thailand.opendevelopmentmyanmar.net/"
+        
+        return domain;
+        
     @staticmethod
     def _create_language_alternatives(link, url):
         '''
@@ -61,23 +79,6 @@ class SitemapController(BaseController):
             #     lastmod.text = res.created.strftime('%Y-%m-%d')
         response.headers['Content-type'] = 'text/xml'
         return etree.tostring(root, pretty_print=True)
-        
-    def domain_for_organization(self,orga_name):
-        
-        domain = "https://opendevelopmentmekong.net/"
-        
-        if orga_name == "cambodia-organization":
-            domain = "https://opendevelopmentcambodia.net/"
-        elif orga_name == "laos-organization":
-            domain = "https://laos.opendevelopmentmekong.net/"
-        elif orga_name == "vietnam-organization":
-            domain = "https://vietnam.opendevelopmentmekong.net/"
-        elif orga_name == "myanmar-organization":
-            domain = "https://opendevelopmentmyanmar.net/"
-        elif orga_name == "thailand-organization":
-            domain = "https://thailand.opendevelopmentmyanmar.net/"
-        
-        return domain;
         
     def view(self):
         return self._render_sitemap()
